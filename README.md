@@ -1,51 +1,44 @@
-# Django-Todolist
+# DevOps Todo List Application
 
-Django-Todolist is a todolist web application with the most basic features of most web apps, i.e. accounts/login, API and (somewhat) interactive UI.
+## Getting Started
 
----
-CSS | [Skeleton](http://getskeleton.com/)
-JS  | [jQuery](https://jquery.com/)
+### Clone the Repository
+```bash
+git clone https://github.com/vk-workshop/devops_todolist_docker_core_task_4_externalize_configs.git
+cd devops_todolist_docker_core_task_4_externalize_configs
+```
 
-## Explore
-Try it out by installing the requirements. (Works only with python >= 3.8, due to Django 4)
+### Build and Run the Application
+```bash
+docker-compose up -d
+```
 
-    pip install -r requirements.txt
+Access the application at [http://localhost:8080/todolist/1/](http://localhost:8080/todolist/1/).
 
-Create a database schema:
+## Database Configuration
+The database configuration is externalized using environment variables. Below are the required environment variables for MySQL:
 
-    python manage.py migrate
+```yaml
+environment:
+  - DB_ENGINE=mysql.connector.django
+  - DB_NAME=app_db
+  - DB_USER=app_user
+  - DB_PASSWORD=1234
+  - DB_HOST=mysql
+  - DB_PORT=3306
+```
 
-And then start the server (default: http://localhost:8000)
+### Django `DATABASES` Settings
+The application uses the following `DATABASES` configuration in Django:
 
-    python manage.py runserver
-
-
-Now you can browse the [API](http://localhost:8000/api/)
-or start on the [landing page](http://localhost:8000/)
-
-## Task
-#### Prerequisites
-- Fork this repository
-
-#### Requirements
-1. pdate docker-compose to be able to set such env variables:
-    - ENGINE
-    - NAME
-    - USER
-    - PASSWORD
-    - HOST
-    - PORT
-2. Update your app to read ENV vars and set DATABASES section fields inside of todolist/settigns.py file
-3. Use semantic versioning to tag image inside the docker-compose
-4. TODO App should work as before
-5. Create PR with your changes and attach it for validation on a platform
-
-
-
-
-
-
-
-
-
-
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.getenv('DB_NAME', 'todolist'),
+        'USER': os.getenv('DB_USER', 'user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'password'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+    }
+}
